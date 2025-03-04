@@ -105,7 +105,7 @@
 		<h2>Section II: Triangle Meshes and Half-Edge Data Structure</h2>
 
 		<h3>Part 3: Area-weighted vertex normals</h3>
-		<p>We implemented area-weighted vertex normals by first taking the area of each face incident to the vertex and multiplying the area by the face's normal vector. We sum up all these area-weighted normals and return the unit vector of the resulting sum. We calculated the area by creating an inline function <code>area</code> which calculates the normal vector of a face and gets the area by taking the norm of the vector and dividing the result by 2. We calculated the normal vector by taking the sum of the cross products of the edges.</p>
+		<p>We implemented area-weighted vertex normals by first taking the area of each face incident to the vertex and multiplying the area by the face's normal vector. We sum up all these area-weighted normals and return the unit vector of the resulting sum. We calculated the area by creating an inline function <code>area</code> which calculates the normal vector of a face and gets the area by taking the norm of the vector and dividing the result by 2. We calculated the normal vector by taking the sum of the cross products of the edges of a face.</p>
 
 		<div style="display: flex; flex-direction: column; align-items: center;">
 			<table style="width: 100%; text-align: center; border-collapse: collapse;">
