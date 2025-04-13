@@ -28,82 +28,312 @@
 	<body>
 		<div class="container">
 		<h1>CS184/284A Spring 2025 Homework 4 Write-Up</h1>
-		<div style="text-align: center;">Names: </div>
+		<div style="text-align: center;">Names: Jay Chou, Sophie Xie</div>
 
 		<br>
 
-		Link to webpage: (TODO) <a href="https://cs184.eecs.berkeley.edu/sp25">cs184.eecs.berkeley.edu/sp25</a>
+		Link to webpage: <a href="https://cal-cs184-student.github.io/hw-webpages-monet2/hw4/index.html">cal-cs184-student.github.io/hw-webpages-monet2/hw4/index.html</a>
 
 		<br>
-
-		Link to GitHub repository: (TODO) <a href="https://cs184.eecs.berkeley.edu/sp25">cs184.eecs.berkeley.edu/sp25</a>
-
-		<figure>
-			<img src="clothsim.png" alt="Cloth draped over sphere" style="width:70%"/>
-			<figcaption>You can add images with captions!</figcaption>
-		</figure>
+		
+		Link to GitHub repository: <a href="https://github.com/cal-cs184-student/sp25-hw4-michelangelo">github.com/cal-cs184-student/sp25-hw4-michelangelo</a>
 
 		<!--
 		We've already added one heading per part, to make your write-up as navigable when grading. Please fit your write-up within these sections!
 		-->
 
 		<h2>Overview</h2>
-		Give a high-level overview of what you implemented in this homework. Think about what you've built as a whole. Share your thoughts on what interesting things you've learned from completing the homework.
+		There are two primary parts of this assignments: the clothing simulation and the shader. For clothing simulation we implemented a mass-spring system to simulate how the particles of the cloth move naturally at each timestep. We considered different types of possible collisions, including collisions with other objects and self-collisions so the simulation looks realistic. For the shader, we implemented various types of shading in GLSL, such as Blinn-Phong and texture mapping, so we could render the scenes with different shading effects. This assignment has really helped us put the physics we learned in high school (and in lecture) to use and see how animations and physical simulations are created!
 
 		<h2>Part 1: Masses and springs</h2>
-		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
 
-		<p>Here is an example 2x2 gridlike structure using an HTML table. Each <b>tr</b> is a row and each <b>td</b> is a column in that row. You might find this useful for framing and showing your result images in an organized fashion.</p>
+		<p>Here is what scene/pinned2.json looks like:</p>
 		<div style="display: flex; flex-direction: column; align-items: center;">
 			<table style="width: 100%; text-align: center; border-collapse: collapse;">
 			  <tr>
 				<td style="text-align: center;">
-				  <img src="clothsim.png" width="400px"/>
-				  <figcaption>Caption goes here.</figcaption>
+				  <img src="part1-1.png" width="400px"/>
+				  <figcaption>Farther view</figcaption>
 				</td>
 				<td style="text-align: center;">
-				  <img src="clothsim.png" width="400px"/>
-				  <figcaption>Caption goes here.</figcaption>
-				</td>
-			  </tr>
-			  <tr>
-				<td style="text-align: center;">
-				  <img src="clothsim.png" width="400px"/>
-				  <figcaption>Caption goes here.</figcaption>
-				</td>
-				<td style="text-align: center;">
-				  <img src="clothsim.png" width="400px"/>
-				  <figcaption>Caption goes here.</figcaption>
+				  <img src="part1-2.png" width="400px"/>
+				  <figcaption>Close-up</figcaption>
 				</td>
 			  </tr>
 			</table>
 		</div>
 
-		<h2>Part 2: Simulation via numerical integration</h2>
-		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+		<p>With different combinations of constraints applied:</p>
+		<div style="display: flex; flex-direction: column; align-items: center;">
+			<table style="width: 100%; text-align: center; border-collapse: collapse;">
+			  <tr>
+				<td style="text-align: center;">
+				  <img src="part1-3.png" width="400px"/>
+				  <figcaption>Without shearing constraints</figcaption>
+				</td>
+				<td style="text-align: center;">
+				  <img src="part1-4.png" width="400px"/>
+				  <figcaption>With only shearing constraints</figcaption>
+				</td>
+				<td style="text-align: center;">
+					<img src="part1-5.png" width="400px"/>
+					<figcaption>All constraints</figcaption>
+				  </td>
+			  </tr>
+			</table>
+		</div>
 
+		<h2>Part 2: Simulation via numerical integration</h2>
+		<p>The spring constant <code>ks</code> controls how "stiff" the springs connecting point masses are. A lower <code>ks</code> value makes the cloth more elastic, stretchy and more wavy, making the cloth rest at a lower position; meanwhile, a higher <code>ks</code> value makes the cloth stiffer and less wavy, making the cloth rest at a higher position.</p>
+
+		<div style="display: flex; flex-direction: column; align-items: center;">
+			<table style="width: 100%; text-align: center; border-collapse: collapse;">
+			  <tr>
+				<td style="text-align: center;">
+				  <img src="part2-1.png" width="400px"/>
+				  <figcaption>Low ks (bouncier & lower resting position)</figcaption>
+				</td>
+				<td style="text-align: center;">
+				  <img src="part2-2.png" width="400px"/>
+				  <figcaption>High ks (stiffer & higher resting position)</figcaption>
+				</td>
+			  </tr>
+			</table>
+		</div>
+		
+		<p>The density makes each point mass heavier and so a higher density value means the cloth is heavier in general and more prone to the gravitational pull and therefore rests at a lower position. In contrast, a lower density value means lighter cloth and a higher resting position.</p>
+
+		<div style="display: flex; flex-direction: column; align-items: center;">
+			<table style="width: 100%; text-align: center; border-collapse: collapse;">
+			  <tr>
+				<td style="text-align: center;">
+				  <img src="part2-3.png" width="400px"/>
+				  <figcaption>Low density (higher resting position)</figcaption>
+				</td>
+				<td style="text-align: center;">
+				  <img src="part2-4.png" width="400px"/>
+				  <figcaption>High density (lower resting position, more drapey)</figcaption>
+				</td>
+			  </tr>
+			</table>
+		</div>
+
+		<p>Damping controls how much kinetic energy is dissipated (lost) in motion. A low damping value means the cloth will oscilate more and higher on the opposite side before coming to a stop. A high damping value means the cloth is subject to a lot of air resistence and tend to fall slower and not oscilate at all.</p>
+
+		<div style="display: flex; flex-direction: column; align-items: center;">
+			<table style="width: 100%; text-align: center; border-collapse: collapse;">
+			  <tr>
+				<td style="text-align: center;">
+				  <img src="part2-5.png" width="400px"/>
+				  <figcaption>Low damping (falls very slowly and no oscilation)</figcaption>
+				</td>
+				<td style="text-align: center;">
+				  <img src="part2-6.png" width="400px"/>
+				  <figcaption>High damping (falls very quickly and oscilates a lot, swinging to the opposite side)</figcaption>
+				</td>
+			  </tr>
+			</table>
+		</div>
+
+		Here's <code>scene/pinned4.json</code> in its final resting state:
+		<div style="display: flex; flex-direction: column; align-items: center;">
+			<table style="width: 100%; text-align: center; border-collapse: collapse;">
+			  <tr>
+				<td style="text-align: center;">
+				  <img src="part2-7.png" width="400px"/>
+				  <figcaption>Default parameters</figcaption>
+				</td>
+			  </tr>
+			</table>
+		</div>
 		<h2>Part 3: Handling collisions with other objects</h2>
-		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+		<p>For handling collisions with spheres we first checked if the point mass's distance from the origin of the sphere was greater than the radius of the sphere. If so, we don't do anything and return early. If the point mass is within the sphere, we calculate the tangent point by first calculating the unit vector going from the origin to the point mass and multiplying that unit vector with the radius of the sphere and then adding the scaled vector to the origin of the sphere. Then we calculate the correction vector by subtracting the point mass's position from the tangent point. Finally, we determine the point mass's final position by adding <code>(1.0 - friction) * correction_vec</code> to the point mass's original position.</p>
+		
+		<p>For handling collisions with planes we first determine the dot product between the vector from a point on the plane to <code>pm.last_position</code> and the plane's normal vector, i.e. <code>dot(pm.last_position - point, normal)</code>. Then, we compute the same thing but for <code>pm.position</code>. Then we multiply the two dot products together. If the product is negative then we know that the point mass moved from one side of the plane to the other in the last time step. If the product is positive then we know that the point mass stayed on the same side of the plane and hence we can return early. However, if it is negative we then compute <code>t</code> which is the time it took for the vector going from <code>pm.position</code> to <code>pm.last_position</code> to reach the plane. After calculating <code>t</code>, we then determined the tangent point by multiplying the vector from <code>pm.position</code> to <code>pm.last_position</code> by <code>t</code> and adding it to <code>pm.position</code>. Then, we calculate the correction vector by subtracting <code>pm.last_position</code> from the tangent point and then adding/subtracting the <code>SURFACE_OFFSET</code> multiplied by the normal of the plane (we add or subtract depending on if the last position was below or above the plane). Finally, just like as we did with the sphere, we determine the point mass's final position by adding <code>(1.0 - friction) * correction_vec</code> to the point mass's original position.</p>
+		
+		<p>Screenshots of our shaded cloth from scene/sphere.json in its final resting state on the sphere using ks=500, 5000, and 50000:</p>
+		<div style="display: flex; flex-direction: column; align-items: center;">
+			<table style="width: 100%; text-align: center; border-collapse: collapse;">
+			  <tr>
+				<td style="text-align: center;">
+				  <img src="part3_500ks.png" width="400px"/>
+				  <figcaption>ks=500</figcaption>
+				</td>
+				<td style="text-align: center;">
+				  <img src="part3_5000ks.png" width="400px"/>
+				  <figcaption>ks=5000</figcaption>
+				</td>
+				<td style="text-align: center;">
+				  <img src="part3_50000ks.png" width="400px"/>
+				  <figcaption>ks=50000</figcaption>
+				</td>
+			  </tr>
+			</table>
+		</div>
+		<p>The differences I see in the results above is that the lower the ks value the more loose the cloth is and the higher the ks value the more stiff the cloth is. Additionally, the lower the ks value the more the cloth hangs and drapes over the sphere. On the other hand the the higher the ks value, the more stiff the cloth seems to be; it doesn't fall or drape itself on the sphere as much.</p>
+
+		<p>Below is a screenshot of our shaded cloth lying peacefully at rest on the plane:</p>
+		<div style="display: flex; flex-direction: column; align-items: center;">
+			<td style="text-align: center;">
+				<img src="part3_plane.png" width="600px"/>
+				<figcaption>Resting state of cloth</figcaption>
+			</td>
+		</div>
 
 		<h2>Part 4: Handling self-collisions</h2>
-		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+		We implemented self-collisions by first implementing <code>hash_position</code>. We mapped a given point mass’s position to a unique float that represents a specific 3D box volume by first calculating <code>w, h, t</code> according to the logic in the spec (namely, w = 3 * width / num_width_points, h = 3 * height / num_height_points, and t = max(w,h)). Then, we determined the specific box the point falls into by subtracting pos.x, pos.y, pos.z mod w, h, t, respectively from pos.x, pos.y, pos.z respectively. This allows us to get the box the position is located in. Then, after we get the box we calculate the unique <code>hash_key</code> by adding and multiplying prime numbers to the box coordinates, i.e. <code>hash_key = ((3 + box_x) * 7 + box_y) * 11 + box_z</code>.
+		
+		<p>After implementing <code>hash_position</code> we implemented <code>build_spatial_map</code> where we loop over all point masses and for each point mass we determine the hash key from the position of the point and add it to the <code>map</code>.</p>
+
+		<p>After populating the <code>map</code>, we then implemented <code>self_collide</code>. For <code>self_collide</code>, we first calculated the hash position of the point mass and then got the vector of point masses associated with that hash from the <code>map</code>.Then, we checked the distance between the point mass and each candidate point mass to see if the distance between them is less than 2 * thickness. If the distance is less than 2 * thickness then we first add to <code>num_matches</code> to keep track of the number of candidate points that are within 2 * thickness distance from the point mass. Then, we subtract from the overall correction vector the unit vector from the point mass's position to the candidate point mass's position multipled by the distance between the point mass's position and the candidate point's position subtracted from 2 * thickness. After iterating through all the candidate points we check to see if <code>num_matches</code> is greater than 0, if yes then we update the point mass's position to be the point mass's original position plus the summed correction vector divided by num_matches (to get the average correction vector) and scaled down by <code>simulation_steps</code>.</p>
+
+		<p>Below are 3 screenshots that document how our cloth falls and folds on itself:</p>
+		<div style="display: flex; flex-direction: column; align-items: center;">
+			<table style="width: 100%; text-align: center; border-collapse: collapse;">
+			  <tr>
+				<td style="text-align: center;">
+				  <img src="part4_initial_fall.png" width="400px"/>
+				  <figcaption>initial self collision</figcaption>
+				</td>
+				<td style="text-align: center;">
+				  <img src="part4_mid_fall.png" width="400px"/>
+				  <figcaption>middle self collision</figcaption>
+				</td>
+				<td style="text-align: center;">
+				  <img src="part4_last_fall.png" width="400px"/>
+				  <figcaption>final resting state</figcaption>
+				</td>
+			  </tr>
+			</table>
+		</div>
+
+		<p>Below are screenshots of the cloth falling at varying densities and ks values:</p>
+		<div style="display: flex; flex-direction: column; align-items: center;">
+			<table style="width: 100%; text-align: center; border-collapse: collapse;">
+			  <tr>
+				<td style="text-align: center;">
+				  <img src="part4_d1ks1000.png" width="400px"/>
+				  <figcaption>density=1, ks=1000</figcaption>
+				</td>
+				<td style="text-align: center;">
+				  <img src="part4_d1ks7500.png" width="400px"/>
+				  <figcaption>density=1, ks=7500</figcaption>
+				</td>
+			  </tr>
+			  <tr>
+				<td style="text-align: center;">
+				  <img src="part4_d50ks1000.png" width="400px"/>
+				  <figcaption>density=50, ks=1000</figcaption>
+				</td>
+				<td style="text-align: center;">
+				  <img src="part4_d50ks7500.png" width="400px"/>
+				  <figcaption>density=50, ks=7500</figcaption>
+				</td>
+			  </tr>
+			</table>
+		</div>
+		<p>At lower densities the cloth looks smoother and has less wrinkles and ripples. At higher densities, the cloth looks a lot less smooth and has many more wrinkles and bumps. Additionally at lower densities the cloth doesn't fold onto itself as much as at higher densities. At higher densities the cloth folds onto itself a lot. On the other hand, for ks values, the higher the value the smoother the cloth is and the less the cloth falls onto itself while falling. The lower the ks value the more ripples the cloth is and the more it folds onto itself. As you can see at density=50 and ks=1000 the cloth is much more wrinkled and folded than at density=1 and ks=7500.</p>
 
 		<h2>Part 5: Shaders</h2>
-		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-
-		<h2>(Optional) Part 6: Extra Credit - Additional cloth simulation features!</h2>
-		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+		<p>Shader programs are programs that runs in parallel on a GPU and are used to control how objects look on a screen (e.g. control their color, lighting, and more). A shader program can be separated into two components: vertex and fragment shaders. Vertex shaders apply transforms to the vertices of a 3D object, modifying properties such as position, normal direction, and texture coordinates. These transforms determine how the object is positioned and viewed in the scene. It then passes down these transforms to the fragment shaders which are responsible for applying transforms to each object fragment which you can also think of as a potential pixel of a shape. Fragment shaders take the modified geometric properties of the verticies as inputs to calculate the final color, texture, etc. of the fragment. </p>
 		
-		<h2>Additional Notes (please remove)</h2>
-		<ul>
-			<li>You can also add code if you'd like as so: <code>code code code</code></li>
-			<li>If you'd like to add math equations, 
-				<ul>
-					<li>You can write inline equations like so: \( a^2 + b^2 = c^2 \)</li>
-					<li>You can write display equations like so: \[ a^2 + b^2 = c^2 \]</li>
-				</ul>
-			</li>
-		</ul>
+		<p>The Blinn-Phong shading model uses ambiant, specular, and diffuse lighting to simulate how light interacts with a surface, giving an added effect and realism to 3D objects in computer graphics. The ambiant lighting component provides a base level of illumination and colors in an object without considering the lighting or shading of the object. The specular lighting component adds highlights to an object, specifically at the places where the light hits an object and reflects back. The diffuse lighting component simulates how light spreads out on an object based off of the direction the light hits an object. Further, the ambiant, specular, and diffuse components are all scaled by certain constants to control how much of each component we want in our Blinn-Phong model.</p>
+		<div style="display: flex; flex-direction: column; align-items: center;">
+			<table style="width: 100%; text-align: center; border-collapse: collapse;">
+			  <tr>
+				<td style="text-align: center;">
+				  <img src="part5_ambiant.png" width="400px"/>
+				  <figcaption>ambiant only</figcaption>
+				</td>
+				<td style="text-align: center;">
+				  <img src="part5_diffuse.png" width="400px"/>
+				  <figcaption>diffuse only</figcaption>
+				</td>
+			  </tr>
+			  <tr>
+				<td style="text-align: center;">
+				  <img src="part5_specular.png" width="400px"/>
+				  <figcaption>specular only</figcaption>
+				</td>
+				<td style="text-align: center;">
+				  <img src="part5_all.png" width="400px"/>
+				  <figcaption>complete blinn-phong model</figcaption>
+				</td>
+			  </tr>
+			</table>
+		</div>
+		<p>Texture mapping shader but using our own custom texture:</p>
+		<div style="display: flex; flex-direction: column; align-items: center;">
+			<td style="text-align: center;">
+				<img src="part5_texture.png" width="400px"/>
+			  </td>
+		</div>
+
+		<p>Screenshots of bump mapping on the cloth and on the sphere and displacement mapping on the sphere:</p>
+		<div style="display: flex; flex-direction: column; align-items: center;">
+			<table style="width: 100%; text-align: center; border-collapse: collapse;">
+			  <tr>
+				<td style="text-align: center;">
+				  <img src="part5_bumpcloth.png" width="400px"/>
+				  <figcaption>Bump mapping on cloth</figcaption>
+				</td>
+				<td style="text-align: center;">
+				  <img src="part5_bumpball.png" width="400px"/>
+				  <figcaption>Bump mapping on ball</figcaption>
+				</td>
+				<td style="text-align: center;">
+				  <img src="part5_displacementball.png" width="400px"/>
+				  <figcaption>Displacement mapping on ball</figcaption>
+				</td>
+			  </tr>
+			</table>
+		</div>
+
+		<p>Bump mapping maps a given texture to an object so that we see an *illusion* of the texture on it. On the other hand, displacement mapping actually modifies the geometry of an object based on its height map, resulting in the actual shape of the object being changed according to the texture. As you can see in the resulting renders the bump mapping on the cloth and the ball show more of an illusion of the texture while the displacement mapping on the ball shows more of a change in geometry and dimensions based off of the texture (e.g. you can actually see the bumps in the actual outline of the sphere). </p>
+
+		<p>Bump shaders on mesh 16x16 and 128x128:</p>
+		<div style="display: flex; flex-direction: column; align-items: center;">
+			<table style="width: 100%; text-align: center; border-collapse: collapse;">
+			  <tr>
+				<td style="text-align: center;">
+				  <img src="part5_16bump.png" width="400px"/>
+				  <figcaption>bump shader 16x16</figcaption>
+				</td>
+				<td style="text-align: center;">
+				  <img src="part5_128bump.png" width="400px"/>
+				  <figcaption>bump shader 128x128</figcaption>
+				</td>
+			  </tr>
+			  <tr>
+				<td style="text-align: center;">
+				  <img src="part5_16displacement.png" width="400px"/>
+				  <figcaption>displacement shader 16x16</figcaption>
+				</td>
+				<td style="text-align: center;">
+				  <img src="part5_128displacement.png" width="400px"/>
+				  <figcaption>displacement shader 128x128</figcaption>
+				</td>
+			  </tr>
+			</table>
+		</div>
+
+		<p>As you can see above, for bump mapping, the coarser the mesh the less smooth the illusion of the texture is as it gets mapped to the sphere. As opposed to the 128x128 mesh where the lines of the texture on the sphere are much smoother. For displacement mapping, the change in geometry of the sphere is much less smooth with a coarser mesh as opposed to the 128x128 mesh where the change in geometry of the sphere is much smoother and in line with the texture. The reason for this is probably because with a coarser mesh we we are sampling less so we interpolating between vertices that are further away from each other as opposed to a less coarse mesh that has vertices closer together.</p>
+
+		<p>Mirror shader on the cloth and on the sphere:</p>
+		<div style="display: flex; flex-direction: column; align-items: center;">
+			<table style="width: 100%; text-align: center; border-collapse: collapse;">
+			  <tr>
+				<td style="text-align: center;">
+				  <img src="part5_mirrorcloth.png" width="400px"/>
+				  <figcaption>Mirror shader on cloth</figcaption>
+				</td>
+				<td style="text-align: center;">
+				  <img src="part5_mirrorball.png" width="400px"/>
+				  <figcaption>Mirror shader on ball</figcaption>
+				</td>
+			  </tr>
+			</table>
+		</div>
 		</div>
 	</body>
 </html>
